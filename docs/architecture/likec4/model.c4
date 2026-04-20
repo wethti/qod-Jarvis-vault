@@ -82,7 +82,7 @@ model {
   }
 
   claudeCode = system 'Jarvis — Always-on Claude Code runtime' {
-    description 'Warm, 24x7 AI agent runtime. Jarvis orchestrates research, commerce (marketing + sales), operations, and customer service for the Alphapak business on top of Claude Code.'
+    description 'Warm, 24x7 AI agent runtime. Jarvis orchestrates research, commerce (marketing + sales), operations, and customer service for the Enterprise business on top of Claude Code.'
     style {
       color primary
       icon tech:claude
@@ -163,7 +163,7 @@ model {
       }
 
       bpmnSkill = skill 'bpmn' {
-        description 'BPMN process map authoring and navigation. Drives the process-first layout of the Alphapak model.'
+        description 'BPMN process map authoring and navigation. Drives the process-first layout of the Enterprise model.'
       }
 
       contentPipeline = skill 'content-pipeline' {
@@ -395,7 +395,7 @@ model {
     }
   }
 
-  alphapak = system 'Alphapak' {
+  enterprise = system 'Enterprise' {
     description 'Target commerce business operated on top of Jarvis. Process architecture follows BPMN: Strategic (skipped) -> Commerce (Marketing + Sales) -> Operations -> Customer Service. First iteration starts at the Commerce block.'
     style {
       color green
@@ -443,7 +443,7 @@ model {
       }
 
       customerTypeFunnels = funnel 'Customer-type Funnels' {
-        description 'Post-qualification, segmented by client type (startup fast-track, small-biz, etc.). Each type has its own stages and SLAs. Alphapak example: bloggers and micro-cosmetics founders need speed.'
+        description 'Post-qualification, segmented by client type (startup fast-track, small-biz, etc.). Each type has its own stages and SLAs. Enterprise example: bloggers and micro-cosmetics founders need speed.'
       }
 
       productVerticalFunnels = funnel 'Product-vertical Funnels' {
@@ -507,69 +507,86 @@ model {
 
   claudeCode.agents.marketingDigital -> socialMedia 'publishes content' 'HTTPS API'
   claudeCode.agents.marketingDigital -> searchEngines 'runs SEO and AI optimization' 'HTTPS API'
-  claudeCode.agents.marketingDigital -> alphapak.marketing.digitalMarketing 'executes'
+  claudeCode.agents.marketingDigital -> enterprise.marketing.digitalMarketing 'executes'
 
   claudeCode.agents.marketingGuerrilla -> emailPlatform 'runs cold email sequences' 'HTTPS API'
   claudeCode.agents.marketingGuerrilla -> callPlatform 'dials cold calls' 'HTTPS API'
   claudeCode.agents.marketingGuerrilla -> smsGateway 'sends cadenced SMS' 'HTTPS API'
   claudeCode.agents.marketingGuerrilla -> web 'scrapes contact databases' 'HTTPS'
-  claudeCode.agents.marketingGuerrilla -> alphapak.marketing.guerrillaMarketing 'executes'
+  claudeCode.agents.marketingGuerrilla -> enterprise.marketing.guerrillaMarketing 'executes'
 
   claudeCode.agents.marketingInfluence -> socialMedia 'places influencer content' 'HTTPS API'
-  claudeCode.agents.marketingInfluence -> alphapak.marketing.influenceMarketing 'executes'
+  claudeCode.agents.marketingInfluence -> enterprise.marketing.influenceMarketing 'executes'
 
   claudeCode.agents.marketingAds -> searchEngines 'runs Google Ads' 'HTTPS API'
   claudeCode.agents.marketingAds -> socialMedia 'runs Meta and TikTok ads' 'HTTPS API'
-  claudeCode.agents.marketingAds -> alphapak.marketing.paidAds 'executes'
+  claudeCode.agents.marketingAds -> enterprise.marketing.paidAds 'executes'
 
   claudeCode.agents.marketResearcher -> firecrawl 'runs SERP and scrape jobs' 'HTTPS and JSON'
   claudeCode.agents.marketResearcher -> web 'reads competitor sources' 'WebSearch and WebFetch'
-  claudeCode.agents.marketResearcher -> alphapak.marketing.researcher 'executes'
+  claudeCode.agents.marketResearcher -> enterprise.marketing.researcher 'executes'
 
   claudeCode.agents.salesColdOutreach -> callPlatform 'runs cold calls' 'HTTPS API'
   claudeCode.agents.salesColdOutreach -> smsGateway 'sends SMS' 'HTTPS API'
   claudeCode.agents.salesColdOutreach -> emailPlatform 'sends nurture emails' 'HTTPS API'
-  claudeCode.agents.salesColdOutreach -> alphapak.sales.coldFunnel 'executes'
+  claudeCode.agents.salesColdOutreach -> enterprise.sales.coldFunnel 'executes'
 
   claudeCode.agents.salesQualifier -> odoo.crm 'updates qualification state' 'HTTPS API'
   claudeCode.agents.salesQualifier -> courseStore 'redirects disqualified small clients' 'HTTPS'
-  claudeCode.agents.salesQualifier -> alphapak.sales.qualificationFunnel 'executes'
+  claudeCode.agents.salesQualifier -> enterprise.sales.qualificationFunnel 'executes'
 
   claudeCode.agents.salesPresenter -> odoo.crm 'creates offers and deal cards' 'HTTPS API'
   claudeCode.agents.salesPresenter -> odoo.taskManager 'books meetings' 'HTTPS API'
-  claudeCode.agents.salesPresenter -> alphapak.sales.presentationPath 'executes'
+  claudeCode.agents.salesPresenter -> enterprise.sales.presentationPath 'executes'
 
   claudeCode.agents.salesFollowup -> emailPlatform 'sends follow-ups' 'HTTPS API'
   claudeCode.agents.salesFollowup -> callPlatform 'places follow-up calls' 'HTTPS API'
-  claudeCode.agents.salesFollowup -> alphapak.sales.postPresentationNurture 'executes'
+  claudeCode.agents.salesFollowup -> enterprise.sales.postPresentationNurture 'executes'
 
   claudeCode.agents.crmParser -> odoo.crm 'populates client and deal cards from calls and chats' 'HTTPS API'
 
   claudeCode.agents.projectOpener -> odoo.taskManager 'opens parallel delivery projects' 'HTTPS API'
   claudeCode.agents.projectOpener -> odoo.crm 'links projects to deals' 'HTTPS API'
-  claudeCode.agents.projectOpener -> alphapak.operations.projectDelivery 'executes'
+  claudeCode.agents.projectOpener -> enterprise.operations.projectDelivery 'executes'
 
   claudeCode.agents.customerServiceAgent -> odoo.crm 'reads client history' 'HTTPS API'
   claudeCode.agents.customerServiceAgent -> odoo.taskManager 'creates complaint tasks' 'HTTPS API'
-  claudeCode.agents.customerServiceAgent -> alphapak.customerServiceBlock.complaints 'executes'
+  claudeCode.agents.customerServiceAgent -> enterprise.customerServiceBlock.complaints 'executes'
 
   claudeCode.agents.conversationMonitor -> callPlatform 'streams call audio' 'HTTPS API'
   claudeCode.agents.conversationMonitor -> odoo.crm 'flags QA findings' 'HTTPS API'
 
   odoo.crm -> odoo.accounting 'forwards approved invoices' 'HTTPS API'
 
-  alphapak.sales.transactionalFunnels -> b2bPortal 'runs order transactions' 'HTTPS API'
+  enterprise.sales.transactionalFunnels -> b2bPortal 'runs order transactions' 'HTTPS API'
 
-  odoo.taskManager -> alphapak.operations.projectDelivery 'routes project tasks' 'internal'
+  odoo.taskManager -> enterprise.operations.projectDelivery 'routes project tasks' 'internal'
 }
 
 views {
   view index {
     title 'System landscape'
-    description 'The always-on Jarvis runtime, the Alphapak business it manages, and the external systems they touch.'
+    description 'The always-on Jarvis runtime, the Enterprise business it manages, and the external systems they touch.'
     include *
   	autoLayout TopBottom
 	}
+
+  view everything {
+    title 'Everything — all containers expanded'
+    description 'Every container at every level expanded: Jarvis internals including all subagents, skills, and plugins; Odoo modules; Enterprise marketing, sales, operations, and customer service with their full sub-process breakdown. Dense by design — use for reference, not for explaining anything to anyone.'
+    include
+      *,
+      claudeCode._,
+      claudeCode.skills._,
+      claudeCode.agents._,
+      claudeCode.plugins._,
+      odoo._,
+      enterprise._,
+      enterprise.marketing._,
+      enterprise.sales._,
+      enterprise.operations._,
+      enterprise.customerServiceBlock._
+  }
 
   view jarvisOverview of claudeCode {
     title 'Jarvis — overview (collapsed groups)'
@@ -605,8 +622,8 @@ views {
     include *
   }
 
-  view alphapakView of alphapak {
-    title 'Alphapak process architecture'
+  view enterpriseView of enterprise {
+    title 'Enterprise process architecture'
     description 'BPMN hierarchy: Commerce (Marketing + Sales) -> Operations -> Customer Service. Strategic layer skipped in first iteration.'
     include
       *,
@@ -616,7 +633,7 @@ views {
       customerServiceBlock._
   }
 
-  view commercial of alphapak {
+  view commercial of enterprise {
     title 'Commerce block: Marketing -> Sales'
     description 'Marketing channels generate leads that converge at qualification and flow through segmented sales funnels to transactional delivery.'
     include
@@ -625,7 +642,7 @@ views {
       sales._
   }
 
-  view customerServiceView of alphapak.customerServiceBlock {
+  view customerServiceView of enterprise.customerServiceBlock {
     title 'Customer Service: feedback and complaints'
     description 'Feedback vs. complaints; fault classification and severity triage with 8D escalation.'
     include *
@@ -633,7 +650,7 @@ views {
 
   view odooModules of odoo {
     title 'Odoo — modules'
-    description 'Modules that make up the Odoo platform: ERP Core, CRM, Task Manager, Accounting. All four share one underlying Odoo database — nesting reflects that. External consumers (odooMcp, Jarvis agents, Alphapak operations) talk to specific modules, not to Odoo as a whole.'
+    description 'Modules that make up the Odoo platform: ERP Core, CRM, Task Manager, Accounting. All four share one underlying Odoo database — nesting reflects that. External consumers (odooMcp, Jarvis agents, Enterprise operations) talk to specific modules, not to Odoo as a whole.'
     include *
   }
 
@@ -647,6 +664,6 @@ views {
       odoo.taskManager,
       odoo.crm,
       odoo.accounting,
-      alphapak.operations
+      enterprise.operations
   }
 }
