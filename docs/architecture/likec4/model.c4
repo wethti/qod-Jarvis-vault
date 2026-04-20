@@ -582,12 +582,8 @@ views {
 
   view jarvisOverview of claudeCode {
     title 'Jarvis — overview (collapsed groups)'
-    description 'Jarvis internals with the Subagents, Skills, and Plugins groups collapsed into single boxes. System-level picture without per-agent or per-skill detail — the per-child edges roll up into single edges on each container.'
+    description 'Jarvis internals with the Subagents, Skills, and Plugins groups shown as single boxes — no per-agent or per-skill detail. Per-child edges roll up into single edges on each container.'
     include *
-    exclude
-      agents._,
-      skills._,
-      plugins._
   }
 
   view skillsView of skills {
