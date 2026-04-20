@@ -1,5 +1,11 @@
 {
   "workbench.localHistory.exclude": {
     "**/*.c4": true
-  }
+  },
+  "likec4.exclude": [
+    "**/.vscode-server/**",
+    "**/.vscode/**",
+    "**/node_modules/**",
+    "**/dist/**"
+  ]
 }
