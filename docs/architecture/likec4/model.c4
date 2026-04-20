@@ -308,9 +308,28 @@ model {
   }
 
   odoo = system 'Odoo' {
-    description 'ERP platform. Source of truth for board state, tasks, CRM, and enterprise data.'
+    description 'ERP platform and single data store for the whole commerce operation. Holds CRM, Task Manager, Accounting, and the underlying ERP core as one integrated module set.'
     style {
       icon bootstrap:kanban-fill
+    }
+
+    erpCore = container 'ERP Core' {
+      description 'Master data: products, partners, inventory, purchasing, manufacturing. The non-CRM, non-task, non-accounting Odoo backbone.'
+    }
+
+    crm = container 'CRM' {
+      description 'Client cards, deal cards, and per-funnel deal state. Populated by the CRM Parser agent from call and chat data.'
+    }
+
+    taskManager = container 'Task Manager' {
+      description 'Single queue of work items. Jarvis breaks tasks by business process and dispatches them here; humans and agents pick up from here.'
+      style {
+        shape queue
+      }
+    }
+
+    accounting = container 'Accounting' {
+      description 'Invoice handling and financial records. Fed from CRM once deals are approved.'
     }
   }
 
@@ -334,21 +353,6 @@ model {
       shape browser
       icon bootstrap:globe2
     }
-  }
-
-  crm = system 'CRM' {
-    description 'Client cards, deal cards, and per-funnel deal state. Populated by the CRM Parser agent from call and chat data.'
-  }
-
-  taskManager = system 'Task Manager' {
-    description 'Single queue of work items. Jarvis breaks tasks by business process and dispatches them here; humans and agents pick up from here. Backed by Odoo.'
-    style {
-      shape queue
-    }
-  }
-
-  accounting = system 'Accounting System' {
-    description 'Invoice handling and financial records. Fed from CRM once deals are approved.'
   }
 
   b2bPortal = system 'B2B Portal' {
@@ -499,7 +503,7 @@ model {
   github -> gitpod 'mirrors repos into live workspaces' 'webhook and git sync'
   manager -> gitpod 'watches agent work in real time' 'browser'
 
-  claudeCode.orchestrator -> taskManager 'breaks tasks by business process, dispatches' 'HTTPS API'
+  claudeCode.orchestrator -> odoo.taskManager 'breaks tasks by business process, dispatches' 'HTTPS API'
 
   claudeCode.agents.marketingDigital -> socialMedia 'publishes content' 'HTTPS API'
   claudeCode.agents.marketingDigital -> searchEngines 'runs SEO and AI optimization' 'HTTPS API'
@@ -527,39 +531,36 @@ model {
   claudeCode.agents.salesColdOutreach -> emailPlatform 'sends nurture emails' 'HTTPS API'
   claudeCode.agents.salesColdOutreach -> alphapak.sales.coldFunnel 'executes'
 
-  claudeCode.agents.salesQualifier -> crm 'updates qualification state' 'HTTPS API'
+  claudeCode.agents.salesQualifier -> odoo.crm 'updates qualification state' 'HTTPS API'
   claudeCode.agents.salesQualifier -> courseStore 'redirects disqualified small clients' 'HTTPS'
   claudeCode.agents.salesQualifier -> alphapak.sales.qualificationFunnel 'executes'
 
-  claudeCode.agents.salesPresenter -> crm 'creates offers and deal cards' 'HTTPS API'
-  claudeCode.agents.salesPresenter -> taskManager 'books meetings' 'HTTPS API'
+  claudeCode.agents.salesPresenter -> odoo.crm 'creates offers and deal cards' 'HTTPS API'
+  claudeCode.agents.salesPresenter -> odoo.taskManager 'books meetings' 'HTTPS API'
   claudeCode.agents.salesPresenter -> alphapak.sales.presentationPath 'executes'
 
   claudeCode.agents.salesFollowup -> emailPlatform 'sends follow-ups' 'HTTPS API'
   claudeCode.agents.salesFollowup -> callPlatform 'places follow-up calls' 'HTTPS API'
   claudeCode.agents.salesFollowup -> alphapak.sales.postPresentationNurture 'executes'
 
-  claudeCode.agents.crmParser -> crm 'populates client and deal cards from calls and chats' 'HTTPS API'
+  claudeCode.agents.crmParser -> odoo.crm 'populates client and deal cards from calls and chats' 'HTTPS API'
 
-  claudeCode.agents.projectOpener -> taskManager 'opens parallel delivery projects' 'HTTPS API'
-  claudeCode.agents.projectOpener -> crm 'links projects to deals' 'HTTPS API'
+  claudeCode.agents.projectOpener -> odoo.taskManager 'opens parallel delivery projects' 'HTTPS API'
+  claudeCode.agents.projectOpener -> odoo.crm 'links projects to deals' 'HTTPS API'
   claudeCode.agents.projectOpener -> alphapak.operations.projectDelivery 'executes'
 
-  claudeCode.agents.customerServiceAgent -> crm 'reads client history' 'HTTPS API'
-  claudeCode.agents.customerServiceAgent -> taskManager 'creates complaint tasks' 'HTTPS API'
+  claudeCode.agents.customerServiceAgent -> odoo.crm 'reads client history' 'HTTPS API'
+  claudeCode.agents.customerServiceAgent -> odoo.taskManager 'creates complaint tasks' 'HTTPS API'
   claudeCode.agents.customerServiceAgent -> alphapak.customerServiceBlock.complaints 'executes'
 
   claudeCode.agents.conversationMonitor -> callPlatform 'streams call audio' 'HTTPS API'
-  claudeCode.agents.conversationMonitor -> crm 'flags QA findings' 'HTTPS API'
+  claudeCode.agents.conversationMonitor -> odoo.crm 'flags QA findings' 'HTTPS API'
 
-  crm -> accounting 'forwards approved invoices' 'HTTPS API'
+  odoo.crm -> odoo.accounting 'forwards approved invoices' 'HTTPS API'
 
   alphapak.sales.transactionalFunnels -> b2bPortal 'runs order transactions' 'HTTPS API'
 
-  taskManager -> alphapak.operations.projectDelivery 'routes project tasks' 'internal'
-
-  taskManager -> odoo 'backed by' 'internal'
-  crm -> odoo 'backed by' 'internal'
+  odoo.taskManager -> alphapak.operations.projectDelivery 'routes project tasks' 'internal'
 }
 
 views {
@@ -637,9 +638,9 @@ views {
       manager,
       claudeCode.orchestrator,
       claudeCode.agents,
-      taskManager,
-      crm,
-      accounting,
+      odoo.taskManager,
+      odoo.crm,
+      odoo.accounting,
       alphapak.operations
   }
 }
