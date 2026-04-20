@@ -1,0 +1,12 @@
+{
+  "name": "jarvis-vault",
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.likec4/**",
+    "**/.vscode-server/**",
+    "**/.vscode/**",
+    "**/History/**",
+    "**/.git/**"
+  ]
+}

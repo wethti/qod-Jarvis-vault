@@ -567,7 +567,8 @@ views {
     title 'System landscape'
     description 'The always-on Jarvis runtime, the Alphapak business it manages, and the external systems they touch.'
     include *
-  }
+  	autoLayout TopBottom
+	}
 
   view runtime of claudeCode {
     title 'Containers inside the Jarvis runtime'
