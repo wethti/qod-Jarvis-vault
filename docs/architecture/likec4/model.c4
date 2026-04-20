@@ -631,6 +631,12 @@ views {
     include *
   }
 
+  view odooModules of odoo {
+    title 'Odoo — modules'
+    description 'Modules that make up the Odoo platform: ERP Core, CRM, Task Manager, Accounting. All four share one underlying Odoo database — nesting reflects that. External consumers (odooMcp, Jarvis agents, Alphapak operations) talk to specific modules, not to Odoo as a whole.'
+    include *
+  }
+
   view jarvisDispatch {
     title 'Jarvis dispatch: orchestrator to Task Manager to Operations'
     description 'Jarvis breaks inbound tasks by business process and dispatches them to the Task Manager, which routes them to operations and specialist agents.'
