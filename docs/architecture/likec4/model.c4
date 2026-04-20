@@ -356,7 +356,14 @@ model {
   }
 
   b2bPortal = system 'B2B Portal' {
-    description 'Self-serve portal driving transactional sales: accept order -> process -> hand to production -> verify shipment.'
+    description 'Self-serve portal driving transactional sales: accept order -> process -> hand to production -> verify shipment. Customer records and orders sync into CRM.'
+    style {
+      shape browser
+    }
+  }
+
+  onlineStore = system 'Online Store' {
+    description 'Direct-to-consumer e-commerce storefront. Orders, cart events, and customer profiles sync into CRM.'
     style {
       shape browser
     }
@@ -559,8 +566,19 @@ model {
   odoo.crm -> odoo.accounting 'forwards approved invoices' 'HTTPS API'
 
   enterprise.sales.transactionalFunnels -> b2bPortal 'runs order transactions' 'HTTPS API'
+  enterprise.sales.transactionalFunnels -> onlineStore 'consumer orders' 'HTTPS API'
 
   odoo.taskManager -> enterprise.operations.projectDelivery 'routes project tasks' 'internal'
+
+  // Channels converge into CRM — every customer-facing system feeds the deal/contact funnel.
+  b2bPortal -> odoo.crm 'syncs B2B customers and orders' 'webhook / API'
+  onlineStore -> odoo.crm 'syncs D2C customers and orders' 'webhook / API'
+  socialMedia -> odoo.crm 'form-fills and inbox leads' 'webhook / API'
+  searchEngines -> odoo.crm 'paid-ads and landing-page leads' 'webhook / API'
+  emailPlatform -> odoo.crm 'replies and campaign responses' 'webhook / API'
+  callPlatform -> odoo.crm 'call logs and inbound calls' 'webhook / API'
+  smsGateway -> odoo.crm 'SMS replies and opt-ins' 'webhook / API'
+  courseStore -> odoo.crm 'course purchasers as leads' 'webhook / API'
 }
 
 views {
