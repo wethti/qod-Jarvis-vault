@@ -570,9 +570,19 @@ views {
   	autoLayout TopBottom
 	}
 
+  view runtimeOverview of claudeCode {
+    title 'Jarvis runtime — overview'
+    description 'Jarvis internals with the Subagents, Skills, and Plugins groups collapsed. The system-level picture without per-agent/per-skill detail. Per-child edges roll up into single edges on each container.'
+    include *
+    exclude
+      agents._,
+      skills._,
+      plugins._
+  }
+
   view runtime of claudeCode {
-    title 'Containers inside the Jarvis runtime'
-    description 'Orchestrator, scheduler, router, specialist subagents, skills, and local stores.'
+    title 'Jarvis runtime — full detail'
+    description 'Every container expanded including individual agents, skills, and plugins. Best when you need to trace a specific subagent wiring to external systems.'
     include
       *,
       skills._,
