@@ -567,6 +567,7 @@ views {
     title 'System landscape'
     description 'The always-on Jarvis runtime, the Alphapak business it manages, and the external systems they touch.'
     include *
+    autoLayout LeftRight
   }
 
   view runtime of claudeCode {
@@ -577,24 +578,28 @@ views {
       skills._,
       agents._,
       plugins._
+    autoLayout LeftRight
   }
 
   view skillsView of skills {
     title 'Skills Library contents'
     description 'Individual skill packs the orchestrator loads on demand.'
     include *
+    autoLayout LeftRight
   }
 
   view agentsView of agents {
     title 'Subagents'
     description 'Specialist Claude subagents the orchestrator delegates work to — one agent per business-process step.'
     include *
+    autoLayout LeftRight
   }
 
   view pluginsView of plugins {
     title 'Plugins'
     description 'Claude Code plugins that hook into the orchestrator lifecycle.'
     include *
+    autoLayout LeftRight
   }
 
   view alphapakView of alphapak {
@@ -606,6 +611,7 @@ views {
       sales._,
       operations._,
       customerServiceBlock._
+    autoLayout LeftRight
   }
 
   view commercial of alphapak {
@@ -615,12 +621,14 @@ views {
       *,
       marketing._,
       sales._
+    autoLayout LeftRight
   }
 
   view customerServiceView of alphapak.customerServiceBlock {
     title 'Customer Service: feedback and complaints'
     description 'Feedback vs. complaints; fault classification and severity triage with 8D escalation.'
     include *
+    autoLayout LeftRight
   }
 
   view jarvisDispatch {
@@ -634,5 +642,6 @@ views {
       crm,
       accounting,
       alphapak.operations
+    autoLayout LeftRight
   }
 }
