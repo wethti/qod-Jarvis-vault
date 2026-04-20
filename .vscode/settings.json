@@ -1,11 +1,15 @@
 {
   "workbench.localHistory.exclude": {
-    "**/*.c4": true
+    "**/*.c4": true,
+    "**/model.c4": true
   },
+  "workbench.localHistory.maxFileEntries": 0,
   "likec4.exclude": [
     "**/.vscode-server/**",
     "**/.vscode/**",
     "**/node_modules/**",
-    "**/dist/**"
+    "**/dist/**",
+    "**/History/**",
+    "**/.git/**"
   ]
 }
