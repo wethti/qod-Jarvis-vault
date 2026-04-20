@@ -1,0 +1,1 @@
+So then we'll have the process flow covered. You just tell Jarvis, "show us the process flow, what results do we have in sales by business process?" And it shows — we have this many qualified at the input, this many at the output, converted into qualification at such-and-such rate, this is the lead quality, for example.

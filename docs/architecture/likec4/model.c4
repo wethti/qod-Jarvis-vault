@@ -1,0 +1,638 @@
+specification {
+  element person {
+    style {
+      shape person
+      color green
+      icon bootstrap:person-fill
+    }
+  }
+
+  element system {
+    style {
+      shape rectangle
+      color secondary
+    }
+  }
+
+  element container {
+    style {
+      shape rectangle
+      color indigo
+    }
+  }
+
+  element database {
+    style {
+      shape cylinder
+      color amber
+    }
+  }
+
+  element agent {
+    style {
+      shape rectangle
+      color sky
+      icon tech:claude
+      multiple true
+    }
+  }
+
+  element skill {
+    style {
+      shape rectangle
+      color slate
+      icon bootstrap:book-fill
+    }
+  }
+
+  element plugin {
+    style {
+      shape component
+      color muted
+      icon bootstrap:puzzle-fill
+    }
+  }
+
+  element mcp {
+    style {
+      shape component
+      color indigo
+      icon bootstrap:plug-fill
+    }
+  }
+
+  element process {
+    style {
+      shape rectangle
+      color muted
+    }
+  }
+
+  element funnel {
+    style {
+      shape queue
+      color slate
+    }
+  }
+}
+
+model {
+  manager = person 'Manager' {
+    description 'Operator. Issues ad-hoc prompts and reviews output between scheduled runs.'
+  }
+
+  claudeCode = system 'Jarvis — Always-on Claude Code runtime' {
+    description 'Warm, 24x7 AI agent runtime. Jarvis orchestrates research, commerce (marketing + sales), operations, and customer service for the Alphapak business on top of Claude Code.'
+    style {
+      color primary
+      icon tech:claude
+    }
+
+    orchestrator = container 'Jarvis Orchestrator' {
+      description 'Routes prompts, coordinates agent handoffs, breaks tasks by business process, commits work to git.'
+      technology 'Claude Code CLI, Opus 4.7'
+      style {
+        icon tech:claude
+      }
+    }
+
+    scheduler = container 'Scheduler' {
+      description 'Fires recurring jobs into the orchestrator.'
+      technology 'cron + ScheduleWakeup'
+      style {
+        shape queue
+        icon bootstrap:clock-fill
+      }
+    }
+
+    router = container 'Claude Router' {
+      description 'Routes LLM calls to cheap models (DeepSeek V3.2) when quality allows, otherwise to Anthropic.'
+      technology 'Local proxy'
+      style {
+        icon bootstrap:signpost-split-fill
+      }
+    }
+
+    plugins = container 'Plugins' {
+      description 'Claude Code plugins that hook into the orchestrator lifecycle.'
+      style {
+        icon bootstrap:puzzle-fill
+        color muted
+      }
+
+      caveman = plugin 'Caveman Plugin' {
+        description 'Compresses prompts and strips filler to cut tokens per call.'
+        technology 'Claude Code plugin'
+      }
+    }
+
+    memory = database 'Persistent Memory' {
+      description 'User profile, feedback rules, project facts, external references.'
+      technology 'Markdown on local filesystem'
+      style {
+        icon bootstrap:journal-text
+      }
+    }
+
+    skills = container 'Skills Library' {
+      description 'Markdown skill packs the orchestrator loads on demand.'
+      technology 'Markdown on local filesystem'
+      style {
+        icon bootstrap:book-fill
+        color amber
+      }
+
+      outboundCopy = skill 'outbound-copy' {
+        description 'Cold email, DMs, and outreach sequence generator.'
+      }
+
+      blogSkill = skill 'blog' {
+        description 'Full-lifecycle blog engine: write, analyze, audit, rewrite, SEO, schema.'
+      }
+
+      seoSkill = skill 'seo' {
+        description 'Deterministic SEO audits for sites, posts, and repos.'
+      }
+
+      claudeApi = skill 'claude-api' {
+        description 'Build and optimize apps on the Anthropic SDK with prompt caching.'
+      }
+
+      updateConfig = skill 'update-config' {
+        description 'Configure the Claude Code harness via settings.json and hooks.'
+      }
+
+      bpmnSkill = skill 'bpmn' {
+        description 'BPMN process map authoring and navigation. Drives the process-first layout of the Alphapak model.'
+      }
+
+      contentPipeline = skill 'content-pipeline' {
+        description 'Fan-out content pipeline: Blog -> LinkedIn article -> Facebook article -> Instagram post; YouTube -> Shorts, Reels, TikTok.'
+      }
+
+      coldOutreachSkill = skill 'cold-outreach' {
+        description 'Cold-call scripts, SMS cadences, email sequences for guerrilla marketing and cold sales.'
+      }
+
+      qualificationSkill = skill 'qualification' {
+        description 'Qualification rubric including the small-client -> courses redirect.'
+      }
+
+      complaint8d = skill 'complaint-8d' {
+        description '8D complaint-analysis playbook for severe customer-service cases with tech-process changes.'
+      }
+    }
+
+    agents = container 'Subagents' {
+      description 'Specialist Claude subagents the orchestrator delegates work to. One agent per business-process step.'
+      style {
+        icon bootstrap:people-fill
+        color sky
+      }
+
+      research = agent 'Competitor Research Agent' {
+        description 'Runs SERP and web sweeps, writes intel dashboards.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      kanban = agent 'Kanban Manager Agent' {
+        description 'Triages the board, assigns owners, runs async standups.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      pluginDev = agent 'Plugin Developer Agent' {
+        description 'Designs and ships Claude Code plugins and skills.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      builder = agent 'Enterprise Systems Builder' {
+        description 'Codes ERP and internal tooling end-to-end, opens PRs.'
+        technology 'Claude Opus 4.7 subagent'
+      }
+
+      marketingDigital = agent 'Digital Marketing Agent' {
+        description 'Runs SEO, social media, blogging, and YouTube content execution. Drives the content fan-out pipeline.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      marketingGuerrilla = agent 'Guerrilla Marketing Agent' {
+        description 'Parses contact databases, orchestrates cold email and cold-call outreach.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      marketingInfluence = agent 'Influence Marketing Agent' {
+        description 'Blogger and influencer partnerships, sponsored content, ad placement.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      marketingAds = agent 'Paid Ads Agent' {
+        description 'Runs Google Ads, Facebook Ads, and TikTok Ads campaigns.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      marketResearcher = agent 'Market Research Agent' {
+        description 'Market-share, competitor, and price research. Scheduled for later — not part of the first iteration.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      salesQualifier = agent 'Sales Qualifier' {
+        description 'Qualifies inbound leads at the single converging qualification funnel (SMM, SEO, paid ads, influence). Disqualifies nano/micro clients into the courses upsell.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      salesColdOutreach = agent 'Cold Sales Agent' {
+        description 'Drives the cold-sales funnel: call -> SMS -> repeat call -> monthly nurture emails for unreached leads.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      salesPresenter = agent 'Presentation Booking Agent' {
+        description 'Books client presentations from cold outreach, generates offers from the conversation context, branches to signed / hold / follow-up.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      salesFollowup = agent 'Follow-up Agent' {
+        description 'Runs post-presentation hold, nurture, and follow-up loops. Feeds non-responsive leads into the post-presentation nurture funnel.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      crmParser = agent 'CRM Parser' {
+        description 'Parses calls and chats into the client card and deal card. Keeps the sales funnel populated from conversation data.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      projectOpener = agent 'Project Opener' {
+        description 'Opens parallel delivery projects on qualification: press-mold development, production-tech writing, shipment. Records per-project attributes.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      customerServiceAgent = agent 'Customer Service Agent' {
+        description 'Triages positive feedback vs. complaints; classifies fault side (client vs. company) and severity; escalates to 8D for tech-process-change cases.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+
+      conversationMonitor = agent 'Conversation Monitor' {
+        description 'Monitors all calls and chats for QA and compliance. Flags findings back to CRM.'
+        technology 'Claude Sonnet 4.6 subagent'
+      }
+    }
+
+    scheduler -> orchestrator 'triggers scheduled runs' 'in-process'
+    orchestrator -> plugins 'hooks into prompt pipeline' 'plugin hook'
+    orchestrator -> router 'routes LLM calls through proxy' 'HTTP'
+    orchestrator -> agents 'delegates specialist work' 'Task tool'
+    orchestrator -> memory 'reads and writes session context' 'filesystem I/O'
+    orchestrator -> skills 'loads on demand' 'filesystem I/O'
+  }
+
+  anthropic = system 'Anthropic API' {
+    description 'Claude Opus, Sonnet, and Haiku inference endpoints.'
+    style {
+      icon tech:anthropic
+    }
+  }
+
+  deepseek = system 'DeepSeek API' {
+    description 'Cheap DeepSeek V3.2 inference endpoint for lower-tier work.'
+  }
+
+  firecrawl = system 'Firecrawl' {
+    description 'Managed web scraping and SERP API used for research sweeps.'
+    style {
+      shape browser
+      icon bootstrap:fire
+    }
+  }
+
+  odooMcp = mcp 'Odoo MCP Server' {
+    description 'Public MCP endpoint exposing the Odoo workspace and Kanban board.'
+  }
+
+  odoo = system 'Odoo' {
+    description 'ERP platform. Source of truth for board state, tasks, CRM, and enterprise data.'
+    style {
+      icon bootstrap:kanban-fill
+    }
+  }
+
+  github = system 'GitHub' {
+    description 'Code hosting, pull requests, Actions CI.'
+    style {
+      icon tech:github
+    }
+  }
+
+  gitpod = system 'Gitpod' {
+    description 'Cloud dev environment mirroring GitHub repos for live visibility into agent work.'
+    style {
+      icon tech:gitpod
+    }
+  }
+
+  web = system 'Competitor web sources' {
+    description 'Vendor sites, pricing pages, news, review aggregators.'
+    style {
+      shape browser
+      icon bootstrap:globe2
+    }
+  }
+
+  crm = system 'CRM' {
+    description 'Client cards, deal cards, and per-funnel deal state. Populated by the CRM Parser agent from call and chat data.'
+  }
+
+  taskManager = system 'Task Manager' {
+    description 'Single queue of work items. Jarvis breaks tasks by business process and dispatches them here; humans and agents pick up from here. Backed by Odoo.'
+    style {
+      shape queue
+    }
+  }
+
+  accounting = system 'Accounting System' {
+    description 'Invoice handling and financial records. Fed from CRM once deals are approved.'
+  }
+
+  b2bPortal = system 'B2B Portal' {
+    description 'Self-serve portal driving transactional sales: accept order -> process -> hand to production -> verify shipment.'
+    style {
+      shape browser
+    }
+  }
+
+  emailPlatform = system 'Email Outreach Platform' {
+    description 'Bulk and cadenced outbound email sender for guerrilla marketing and nurture sequences.'
+  }
+
+  callPlatform = system 'Voice Call Platform' {
+    description 'VoIP used for cold calls, follow-ups, and presentation bookings. Streams audio for QA.'
+  }
+
+  smsGateway = system 'SMS Gateway' {
+    description 'Transactional and cadenced SMS to leads in the cold-sales funnel.'
+  }
+
+  socialMedia = system 'Social Media Platforms' {
+    description 'Instagram, Facebook, LinkedIn, TikTok, YouTube — owned-content publishing and paid-ads targets.'
+    style {
+      shape browser
+    }
+  }
+
+  searchEngines = system 'Search Engines' {
+    description 'Google and peers — SEO and paid-ads targets.'
+    style {
+      shape browser
+    }
+  }
+
+  courseStore = system 'Course Store' {
+    description 'Third-party courses on scaling nano / micro businesses up. Where disqualified small clients are redirected rather than being lost entirely.'
+    style {
+      shape browser
+    }
+  }
+
+  alphapak = system 'Alphapak' {
+    description 'Target commerce business operated on top of Jarvis. Process architecture follows BPMN: Strategic (skipped) -> Commerce (Marketing + Sales) -> Operations -> Customer Service. First iteration starts at the Commerce block.'
+    style {
+      color green
+    }
+
+    marketing = container 'Marketing' {
+      description 'Lead generation across digital, guerrilla, influence, and paid channels.'
+      style {
+        color muted
+      }
+
+      digitalMarketing = process 'Digital Marketing' {
+        description 'SEO and AI optimization; social media (Instagram, Facebook, LinkedIn); blogging; YouTube. Blog articles respun into LinkedIn, Facebook, and Instagram posts; YouTube content into Shorts, Reels, and TikTok videos.'
+      }
+
+      guerrillaMarketing = process 'Guerrilla Marketing' {
+        description 'DB parsing for email lists, cold email outreach, cold-call dialling. First non-free path to cheap leads.'
+      }
+
+      influenceMarketing = process 'Influence Marketing' {
+        description 'Blogger and influencer partnerships and sponsored content.'
+      }
+
+      paidAds = process 'Paid Ads' {
+        description 'Google Ads, Facebook Ads, TikTok Ads — paid acquisition.'
+      }
+
+      researcher = process 'Market Researcher' {
+        description 'Market-share, competitor, and price research. Flagged for later — not first iteration.'
+      }
+    }
+
+    sales = container 'Sales' {
+      description 'Funnel architecture: cold, converging qualification, post-qualification by customer type, product-vertical, transactional.'
+      style {
+        color muted
+      }
+
+      coldFunnel = funnel 'Cold Sales Funnel' {
+        description 'From guerrilla marketing: call -> SMS -> repeat call (3 to 5 attempts) -> monthly nurture emails for non-reached. Ends at offer booking or dropout.'
+      }
+
+      qualificationFunnel = funnel 'Qualification Funnel' {
+        description 'Single converging funnel for inbound leads (SMM, SEO, paid ads, influence). Robot or human qualifies; disqualified nano/micro leads redirect to courses.'
+      }
+
+      customerTypeFunnels = funnel 'Customer-type Funnels' {
+        description 'Post-qualification, segmented by client type (startup fast-track, small-biz, etc.). Each type has its own stages and SLAs. Alphapak example: bloggers and micro-cosmetics founders need speed.'
+      }
+
+      productVerticalFunnels = funnel 'Product-vertical Funnels' {
+        description 'Cosmetics, food, household goods. Each vertical has its own customer journey and stage follow-ups, with a dedicated AI agent profiling deals.'
+      }
+
+      presentationPath = process 'Presentation Path' {
+        description 'Cold outreach -> booked meeting -> product presentation -> offer generation. Branches: sign immediately, go to hold + follow-ups, or fall to post-presentation nurture.'
+      }
+
+      postPresentationNurture = funnel 'Post-presentation Nurture' {
+        description 'Separate nurture funnel for leads that went through a presentation but did not sign and stopped answering follow-ups.'
+      }
+
+      transactionalFunnels = funnel 'Transactional Sales Funnels' {
+        description 'Per product line: accept order -> process -> hand to production -> verify shipment. Automatic via the B2B portal or semi-manual for niche orders.'
+      }
+    }
+
+    operations = container 'Operations' {
+      description 'Project delivery: parallel projects opened at qualification and driven through production to accounting.'
+      style {
+        color muted
+      }
+
+      projectDelivery = process 'Project Delivery' {
+        description 'Press-mold development, production-technology writing, shipment. Opens automatically on qualification, records per-project attributes, hands off to accounting once invoiced.'
+      }
+    }
+
+    customerServiceBlock = container 'Customer Service' {
+      description 'Inquiry triage post-sale. Feedback is captured; complaints are classified by fault side and severity.'
+      style {
+        color muted
+      }
+
+      feedback = process 'Feedback Capture' {
+        description 'Positive inquiries and feedback routed for retention and testimonials.'
+      }
+
+      complaints = process 'Complaints Handling' {
+        description 'Complaints classified by fault side (client vs. company) and severity (fast-fixable, medium-urgent, extreme requiring tech-process change). 8D applied to severe cases.'
+      }
+    }
+  }
+
+  manager -> claudeCode.orchestrator 'issues prompts, reviews output' 'CLI and chat'
+  claudeCode.router -> anthropic 'sends prompts, streams completions' 'HTTPS and JSON'
+  claudeCode.router -> deepseek 'routes low-tier calls to cheap model' 'HTTPS and JSON'
+  claudeCode.agents.research -> firecrawl 'runs SERP and scrape jobs' 'HTTPS and JSON'
+  claudeCode.agents.research -> web 'searches and fetches pages' 'WebSearch and WebFetch'
+  claudeCode.agents.research -> github 'commits intel dashboard updates' 'git over HTTPS'
+  claudeCode.agents.kanban -> odooMcp 'reads and updates tasks' 'MCP over stdio'
+  odooMcp -> odoo 'proxies board state' 'internal API'
+  claudeCode.agents.pluginDev -> github 'pushes plugins and releases' 'git over HTTPS'
+  claudeCode.agents.builder -> github 'pushes system code, opens PRs' 'git over HTTPS'
+  github -> gitpod 'mirrors repos into live workspaces' 'webhook and git sync'
+  manager -> gitpod 'watches agent work in real time' 'browser'
+
+  claudeCode.orchestrator -> taskManager 'breaks tasks by business process, dispatches' 'HTTPS API'
+
+  claudeCode.agents.marketingDigital -> socialMedia 'publishes content' 'HTTPS API'
+  claudeCode.agents.marketingDigital -> searchEngines 'runs SEO and AI optimization' 'HTTPS API'
+  claudeCode.agents.marketingDigital -> alphapak.marketing.digitalMarketing 'executes'
+
+  claudeCode.agents.marketingGuerrilla -> emailPlatform 'runs cold email sequences' 'HTTPS API'
+  claudeCode.agents.marketingGuerrilla -> callPlatform 'dials cold calls' 'HTTPS API'
+  claudeCode.agents.marketingGuerrilla -> smsGateway 'sends cadenced SMS' 'HTTPS API'
+  claudeCode.agents.marketingGuerrilla -> web 'scrapes contact databases' 'HTTPS'
+  claudeCode.agents.marketingGuerrilla -> alphapak.marketing.guerrillaMarketing 'executes'
+
+  claudeCode.agents.marketingInfluence -> socialMedia 'places influencer content' 'HTTPS API'
+  claudeCode.agents.marketingInfluence -> alphapak.marketing.influenceMarketing 'executes'
+
+  claudeCode.agents.marketingAds -> searchEngines 'runs Google Ads' 'HTTPS API'
+  claudeCode.agents.marketingAds -> socialMedia 'runs Meta and TikTok ads' 'HTTPS API'
+  claudeCode.agents.marketingAds -> alphapak.marketing.paidAds 'executes'
+
+  claudeCode.agents.marketResearcher -> firecrawl 'runs SERP and scrape jobs' 'HTTPS and JSON'
+  claudeCode.agents.marketResearcher -> web 'reads competitor sources' 'WebSearch and WebFetch'
+  claudeCode.agents.marketResearcher -> alphapak.marketing.researcher 'executes'
+
+  claudeCode.agents.salesColdOutreach -> callPlatform 'runs cold calls' 'HTTPS API'
+  claudeCode.agents.salesColdOutreach -> smsGateway 'sends SMS' 'HTTPS API'
+  claudeCode.agents.salesColdOutreach -> emailPlatform 'sends nurture emails' 'HTTPS API'
+  claudeCode.agents.salesColdOutreach -> alphapak.sales.coldFunnel 'executes'
+
+  claudeCode.agents.salesQualifier -> crm 'updates qualification state' 'HTTPS API'
+  claudeCode.agents.salesQualifier -> courseStore 'redirects disqualified small clients' 'HTTPS'
+  claudeCode.agents.salesQualifier -> alphapak.sales.qualificationFunnel 'executes'
+
+  claudeCode.agents.salesPresenter -> crm 'creates offers and deal cards' 'HTTPS API'
+  claudeCode.agents.salesPresenter -> taskManager 'books meetings' 'HTTPS API'
+  claudeCode.agents.salesPresenter -> alphapak.sales.presentationPath 'executes'
+
+  claudeCode.agents.salesFollowup -> emailPlatform 'sends follow-ups' 'HTTPS API'
+  claudeCode.agents.salesFollowup -> callPlatform 'places follow-up calls' 'HTTPS API'
+  claudeCode.agents.salesFollowup -> alphapak.sales.postPresentationNurture 'executes'
+
+  claudeCode.agents.crmParser -> crm 'populates client and deal cards from calls and chats' 'HTTPS API'
+
+  claudeCode.agents.projectOpener -> taskManager 'opens parallel delivery projects' 'HTTPS API'
+  claudeCode.agents.projectOpener -> crm 'links projects to deals' 'HTTPS API'
+  claudeCode.agents.projectOpener -> alphapak.operations.projectDelivery 'executes'
+
+  claudeCode.agents.customerServiceAgent -> crm 'reads client history' 'HTTPS API'
+  claudeCode.agents.customerServiceAgent -> taskManager 'creates complaint tasks' 'HTTPS API'
+  claudeCode.agents.customerServiceAgent -> alphapak.customerServiceBlock.complaints 'executes'
+
+  claudeCode.agents.conversationMonitor -> callPlatform 'streams call audio' 'HTTPS API'
+  claudeCode.agents.conversationMonitor -> crm 'flags QA findings' 'HTTPS API'
+
+  crm -> accounting 'forwards approved invoices' 'HTTPS API'
+
+  alphapak.sales.transactionalFunnels -> b2bPortal 'runs order transactions' 'HTTPS API'
+
+  taskManager -> alphapak.operations.projectDelivery 'routes project tasks' 'internal'
+
+  taskManager -> odoo 'backed by' 'internal'
+  crm -> odoo 'backed by' 'internal'
+}
+
+views {
+  view index {
+    title 'System landscape'
+    description 'The always-on Jarvis runtime, the Alphapak business it manages, and the external systems they touch.'
+    include *
+  }
+
+  view runtime of claudeCode {
+    title 'Containers inside the Jarvis runtime'
+    description 'Orchestrator, scheduler, router, specialist subagents, skills, and local stores.'
+    include
+      *,
+      skills._,
+      agents._,
+      plugins._
+  }
+
+  view skillsView of skills {
+    title 'Skills Library contents'
+    description 'Individual skill packs the orchestrator loads on demand.'
+    include *
+  }
+
+  view agentsView of agents {
+    title 'Subagents'
+    description 'Specialist Claude subagents the orchestrator delegates work to — one agent per business-process step.'
+    include *
+  }
+
+  view pluginsView of plugins {
+    title 'Plugins'
+    description 'Claude Code plugins that hook into the orchestrator lifecycle.'
+    include *
+  }
+
+  view alphapakView of alphapak {
+    title 'Alphapak process architecture'
+    description 'BPMN hierarchy: Commerce (Marketing + Sales) -> Operations -> Customer Service. Strategic layer skipped in first iteration.'
+    include
+      *,
+      marketing._,
+      sales._,
+      operations._,
+      customerServiceBlock._
+  }
+
+  view commercial of alphapak {
+    title 'Commerce block: Marketing -> Sales'
+    description 'Marketing channels generate leads that converge at qualification and flow through segmented sales funnels to transactional delivery.'
+    include
+      *,
+      marketing._,
+      sales._
+  }
+
+  view customerServiceView of alphapak.customerServiceBlock {
+    title 'Customer Service: feedback and complaints'
+    description 'Feedback vs. complaints; fault classification and severity triage with 8D escalation.'
+    include *
+  }
+
+  view jarvisDispatch {
+    title 'Jarvis dispatch: orchestrator to Task Manager to Operations'
+    description 'Jarvis breaks inbound tasks by business process and dispatches them to the Task Manager, which routes them to operations and specialist agents.'
+    include
+      manager,
+      claudeCode.orchestrator,
+      claudeCode.agents,
+      taskManager,
+      crm,
+      accounting,
+      alphapak.operations
+  }
+}

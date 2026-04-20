@@ -1,0 +1,18 @@
+{
+  "name": "vault-likec4",
+  "private": true,
+  "version": "0.1.0",
+  "description": "LikeC4 model for the 24/7 Claude Code instance. Rendered to GitHub Pages.",
+  "scripts": {
+    "start": "likec4 start",
+    "build": "likec4 build --output dist",
+    "validate": "likec4 validate",
+    "format": "likec4 format"
+  },
+  "devDependencies": {
+    "likec4": "^1.55.1"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  }
+}

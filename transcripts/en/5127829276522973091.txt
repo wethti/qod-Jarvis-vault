@@ -1,0 +1,1 @@
+Any interactions — by robot or by human — following a call or correspondence, should be parsed into the CRM and broken down, and the sales funnel should be populated. Here's an agent that takes data from chat or call data and parses everything into the client card and the deal card.
