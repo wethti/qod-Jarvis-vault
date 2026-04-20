@@ -512,73 +512,65 @@ model {
 
   claudeCode.orchestrator -> odoo.taskManager 'breaks tasks by business process, dispatches' 'HTTPS API'
 
-  claudeCode.agents.marketingDigital -> socialMedia 'publishes content' 'HTTPS API'
-  claudeCode.agents.marketingDigital -> searchEngines 'runs SEO and AI optimization' 'HTTPS API'
+  // Jarvis agents execute the Enterprise business-process blocks. Agents do not touch external
+  // channels directly — the process blocks they execute are what own those connections.
   claudeCode.agents.marketingDigital -> enterprise.marketing.digitalMarketing 'executes'
-
-  claudeCode.agents.marketingGuerrilla -> emailPlatform 'runs cold email sequences' 'HTTPS API'
-  claudeCode.agents.marketingGuerrilla -> callPlatform 'dials cold calls' 'HTTPS API'
-  claudeCode.agents.marketingGuerrilla -> smsGateway 'sends cadenced SMS' 'HTTPS API'
-  claudeCode.agents.marketingGuerrilla -> web 'scrapes contact databases' 'HTTPS'
   claudeCode.agents.marketingGuerrilla -> enterprise.marketing.guerrillaMarketing 'executes'
-
-  claudeCode.agents.marketingInfluence -> socialMedia 'places influencer content' 'HTTPS API'
   claudeCode.agents.marketingInfluence -> enterprise.marketing.influenceMarketing 'executes'
-
-  claudeCode.agents.marketingAds -> searchEngines 'runs Google Ads' 'HTTPS API'
-  claudeCode.agents.marketingAds -> socialMedia 'runs Meta and TikTok ads' 'HTTPS API'
   claudeCode.agents.marketingAds -> enterprise.marketing.paidAds 'executes'
-
-  claudeCode.agents.marketResearcher -> firecrawl 'runs SERP and scrape jobs' 'HTTPS and JSON'
-  claudeCode.agents.marketResearcher -> web 'reads competitor sources' 'WebSearch and WebFetch'
   claudeCode.agents.marketResearcher -> enterprise.marketing.researcher 'executes'
-
-  claudeCode.agents.salesColdOutreach -> callPlatform 'runs cold calls' 'HTTPS API'
-  claudeCode.agents.salesColdOutreach -> smsGateway 'sends SMS' 'HTTPS API'
-  claudeCode.agents.salesColdOutreach -> emailPlatform 'sends nurture emails' 'HTTPS API'
   claudeCode.agents.salesColdOutreach -> enterprise.sales.coldFunnel 'executes'
-
-  claudeCode.agents.salesQualifier -> odoo.crm 'updates qualification state' 'HTTPS API'
-  claudeCode.agents.salesQualifier -> courseStore 'redirects disqualified small clients' 'HTTPS'
   claudeCode.agents.salesQualifier -> enterprise.sales.qualificationFunnel 'executes'
-
-  claudeCode.agents.salesPresenter -> odoo.crm 'creates offers and deal cards' 'HTTPS API'
-  claudeCode.agents.salesPresenter -> odoo.taskManager 'books meetings' 'HTTPS API'
   claudeCode.agents.salesPresenter -> enterprise.sales.presentationPath 'executes'
-
-  claudeCode.agents.salesFollowup -> emailPlatform 'sends follow-ups' 'HTTPS API'
-  claudeCode.agents.salesFollowup -> callPlatform 'places follow-up calls' 'HTTPS API'
   claudeCode.agents.salesFollowup -> enterprise.sales.postPresentationNurture 'executes'
-
-  claudeCode.agents.crmParser -> odoo.crm 'populates client and deal cards from calls and chats' 'HTTPS API'
-
-  claudeCode.agents.projectOpener -> odoo.taskManager 'opens parallel delivery projects' 'HTTPS API'
-  claudeCode.agents.projectOpener -> odoo.crm 'links projects to deals' 'HTTPS API'
   claudeCode.agents.projectOpener -> enterprise.operations.projectDelivery 'executes'
-
-  claudeCode.agents.customerServiceAgent -> odoo.crm 'reads client history' 'HTTPS API'
-  claudeCode.agents.customerServiceAgent -> odoo.taskManager 'creates complaint tasks' 'HTTPS API'
   claudeCode.agents.customerServiceAgent -> enterprise.customerServiceBlock.complaints 'executes'
 
-  claudeCode.agents.conversationMonitor -> callPlatform 'streams call audio' 'HTTPS API'
+  // Jarvis agents that write directly to Odoo modules (CRM / Task Manager are data stores,
+  // not process blocks, so agents hit them directly).
+  claudeCode.agents.salesPresenter -> odoo.taskManager 'books meetings' 'HTTPS API'
+  claudeCode.agents.crmParser -> odoo.crm 'populates client and deal cards from calls and chats' 'HTTPS API'
+  claudeCode.agents.projectOpener -> odoo.taskManager 'opens parallel delivery projects' 'HTTPS API'
+  claudeCode.agents.projectOpener -> odoo.crm 'links projects to deals' 'HTTPS API'
+  claudeCode.agents.customerServiceAgent -> odoo.crm 'reads client history' 'HTTPS API'
+  claudeCode.agents.customerServiceAgent -> odoo.taskManager 'creates complaint tasks' 'HTTPS API'
   claudeCode.agents.conversationMonitor -> odoo.crm 'flags QA findings' 'HTTPS API'
 
+  // CRM is the pivot between Marketing and Sales: marketing delivers leads, sales draws from
+  // the deal pool and writes deal state back.
+  enterprise.marketing -> odoo.crm 'delivers leads' 'CRM API'
+  odoo.crm -> enterprise.sales 'supplies qualified leads' 'CRM API'
+  enterprise.sales -> odoo.crm 'writes deal state' 'CRM API'
+
   odoo.crm -> odoo.accounting 'forwards approved invoices' 'HTTPS API'
-
-  enterprise.sales.transactionalFunnels -> b2bPortal 'runs order transactions' 'HTTPS API'
-  enterprise.sales.transactionalFunnels -> onlineStore 'consumer orders' 'HTTPS API'
-
   odoo.taskManager -> enterprise.operations.projectDelivery 'routes project tasks' 'internal'
 
-  // Channels converge into CRM — every customer-facing system feeds the deal/contact funnel.
-  b2bPortal -> odoo.crm 'syncs B2B customers and orders' 'webhook / API'
-  onlineStore -> odoo.crm 'syncs D2C customers and orders' 'webhook / API'
-  socialMedia -> odoo.crm 'form-fills and inbox leads' 'webhook / API'
-  searchEngines -> odoo.crm 'paid-ads and landing-page leads' 'webhook / API'
-  emailPlatform -> odoo.crm 'replies and campaign responses' 'webhook / API'
-  callPlatform -> odoo.crm 'call logs and inbound calls' 'webhook / API'
-  smsGateway -> odoo.crm 'SMS replies and opt-ins' 'webhook / API'
-  courseStore -> odoo.crm 'course purchasers as leads' 'webhook / API'
+  // Enterprise marketing blocks -> the external channels they use.
+  enterprise.marketing.digitalMarketing -> socialMedia 'publishes content' 'HTTPS API'
+  enterprise.marketing.digitalMarketing -> searchEngines 'SEO and AI optimization' 'HTTPS API'
+  enterprise.marketing.guerrillaMarketing -> emailPlatform 'cold email sequences' 'HTTPS API'
+  enterprise.marketing.guerrillaMarketing -> callPlatform 'dials cold calls' 'HTTPS API'
+  enterprise.marketing.guerrillaMarketing -> smsGateway 'cadenced SMS' 'HTTPS API'
+  enterprise.marketing.guerrillaMarketing -> web 'scrapes contact databases' 'HTTPS'
+  enterprise.marketing.influenceMarketing -> socialMedia 'influencer placements' 'HTTPS API'
+  enterprise.marketing.paidAds -> searchEngines 'Google Ads' 'HTTPS API'
+  enterprise.marketing.paidAds -> socialMedia 'Meta and TikTok ads' 'HTTPS API'
+  enterprise.marketing.researcher -> firecrawl 'SERP and scrape jobs' 'HTTPS and JSON'
+  enterprise.marketing.researcher -> web 'competitor sources' 'HTTPS'
+
+  // Enterprise sales blocks -> the external channels they use.
+  enterprise.sales.coldFunnel -> callPlatform 'cold calls' 'HTTPS API'
+  enterprise.sales.coldFunnel -> smsGateway 'SMS cadence' 'HTTPS API'
+  enterprise.sales.coldFunnel -> emailPlatform 'nurture emails' 'HTTPS API'
+  enterprise.sales.qualificationFunnel -> courseStore 'redirect disqualified leads' 'HTTPS'
+  enterprise.sales.presentationPath -> callPlatform 'booking calls' 'HTTPS API'
+  enterprise.sales.postPresentationNurture -> emailPlatform 'follow-up emails' 'HTTPS API'
+  enterprise.sales.postPresentationNurture -> callPlatform 'follow-up calls' 'HTTPS API'
+  enterprise.sales.transactionalFunnels -> b2bPortal 'B2B order transactions' 'HTTPS API'
+  enterprise.sales.transactionalFunnels -> onlineStore 'D2C orders' 'HTTPS API'
+
+  // Conversation QA still taps the call platform directly (raw audio stream).
+  claudeCode.agents.conversationMonitor -> callPlatform 'streams call audio' 'HTTPS API'
 }
 
 views {
